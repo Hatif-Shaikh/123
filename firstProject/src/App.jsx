@@ -1,10 +1,11 @@
-import {useEffect, useState } from "react"
+import {useEffect, useState,useRef } from "react"
 import Items from "./Items"
 const App = () => {
-
-
   const [input, setInput] = useState(" ")
   const [Todos, setTodos] = useState([])
+  const isFirstRender = useRef(true);
+
+
   const addTodo = (e) => {
     e.preventDefault();
     if (input.trim() === "") {
@@ -21,9 +22,17 @@ const App = () => {
 
   };
   
+  useEffect(()=>{
+    const savedTodos = JSON.parse(localStorage.getItem("Todos"))
+    if(savedTodos) setTodos(savedTodos);
+  },[])
+
   useEffect(() => {
+    if(isFirstRender.current){
+      isFirstRender.current = false;
+      return;
+    }
     localStorage.setItem("todos",JSON.stringify(Todos))
-    console.log("Saving to LocalStorage");
     
   }, [Todos])
   
